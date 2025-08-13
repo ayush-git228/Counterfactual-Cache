@@ -74,7 +74,7 @@ Counterfactual Cache is an interactive web performance analysis tool that allows
 
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/Counterfactual-Cache.git
+git clone https://github.com/ayush-git228/Counterfactual-Cache.git
 cd Counterfactual-Cache
 
 # Create virtual environment
@@ -89,9 +89,6 @@ pip install -r requirements.txt
 
 # Install Playwright browsers
 playwright install chromium
-
-# Install system dependencies for Playwright
-playwright install-deps chromium
 ```
 
 ---
