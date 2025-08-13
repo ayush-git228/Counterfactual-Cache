@@ -156,3 +156,36 @@ Export:
 
 ---
 
+Contributing 🤝
+
+I welcome contributions! Please follow these steps:
+
+```bash
+# Fork the repository
+
+# Create a feature branch
+git checkout -b feature/your-feature
+
+# Commit your changes
+git commit -am 'Add some feature'
+
+# Push to the branch
+git push origin feature/your-feature
+
+# Open a pull request
+```
+
+---
+
+Roadmap for future (I think so)🗺️
+
+1. Mobile device simulation
+
+2. Lighthouse integration
+
+3. CI/CD performance tracking
+
+4. Automated optimization suggestions
+
+5. Multi-page analysis
+
