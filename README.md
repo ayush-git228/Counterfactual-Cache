@@ -6,12 +6,16 @@ Counterfactual Cache is an interactive web performance analysis tool that allows
 
 ---
 <img width="1917" height="528" alt="ss-ss-4" src="https://github.com/user-attachments/assets/dd7a58fe-ba99-433c-901c-7426f19a34c1" />
+
 ---
 <img width="1895" height="589" alt="ss-ss-1" src="https://github.com/user-attachments/assets/9dc7e32a-418c-4245-89ee-734945269cf0" />
+
 ----
 <img width="1891" height="701" alt="ss-ss-2" src="https://github.com/user-attachments/assets/2fb646b5-c1bb-4299-ab7e-83ddcf3d1282" />
+
 ---
 <img width="1878" height="807" alt="ss-ss-3" src="https://github.com/user-attachments/assets/88e87278-97c9-4fb4-87f3-9f0906c9a22a" />
+
 ---
 
 
@@ -85,6 +89,14 @@ playwright install chromium
 
 # Install system dependencies for Playwright
 playwright install-deps chromium
+```
+
+---
+
+## Run Application
+
+```bash
+python run.py
 ```
 
 ---
