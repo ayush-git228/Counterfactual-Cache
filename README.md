@@ -17,6 +17,9 @@ Counterfactual Cache is an interactive web performance analysis tool that allows
 <img width="1878" height="807" alt="ss-ss-3" src="https://github.com/user-attachments/assets/88e87278-97c9-4fb4-87f3-9f0906c9a22a" />
 
 ---
+<img width="1894" height="920" alt="ss-ss-5" src="https://github.com/user-attachments/assets/e889f378-e6bb-4d91-9676-9744a441c10e" />
+
+---
 
 
 ## Key Features ✨
@@ -98,6 +101,8 @@ playwright install-deps chromium
 ```bash
 python run.py
 ```
+
+Go to  http://127.0.0.1:8000 or your local Url
 
 ---
 
