@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Counterfactual Cache</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Counterfactual Cache</h1>
+            <p class="subtitle">Counterfactual Performance Explorer</p>
+        </header>
+
+        <!-- Input Section -->
+        <section class="measurement-section">
+            <div class="input-group">
+                <input type="url" id="target-url" placeholder="https://abcxyz.com" required>
+                <button id="measure-btn">Measure</button>
+            </div>
+            
+            <!-- Progress Loader -->
+            <div class="progress-container" id="progress-container">
+                <div class="progress-bar" id="progress-bar">
+                    <span class="progress-text" id="progress-text">0%</span>
+                </div>
+                <div class="phases" id="phases-text">Initializing...</div>
+            </div>
+            
+            <div id="error-message" class="error"></div>
+        </section>
+
+        <!-- Results Section -->
+        <section id="results-section" class="hidden">
+            <div class="metrics-summary">
+                <div class="metric-card">
+                    <h3>Original Load Time</h3>
+                    <p id="original-total">0 ms</p>
+                </div>
+                <div class="metric-card">
+                    <h3>Optimized Load Time</h3>
+                    <p id="optimized-total">0 ms</p>
+                </div>
+                <div class="metric-card highlight">
+                    <h3>Time Saved</h3>
+                    <p id="time-saved">0 ms</p>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="phase-chart"></canvas>
+            </div>
+
+            <h2>Phase Breakdown</h2>
+            <table id="phase-table">
+                <thead>
+                    <tr>
+                        <th>Phase</th>
+                        <th>Original</th>
+                        <th>Optimized</th>
+                        <th>Delta</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+            <!-- Full Audit Button -->
+            <div class="audit-actions hidden" id="full-audit-container" style="margin-top: 20px;">
+                <button id="full-audit-btn">Download Full Audit (PDF)</button>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // DOM Elements
+        const measureBtn = document.getElementById('measure-btn');
+        const targetUrl = document.getElementById('target-url');
+        const errorMessage = document.getElementById('error-message');
+        const resultsSection = document.getElementById('results-section');
+        const fullAuditContainer = document.getElementById('full-audit-container');
+        
+        // Progress elements
+        const progressContainer = document.getElementById('progress-container');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const phasesText = document.getElementById('phases-text');
+        
+        let lastMeasurementData = null;
+        let chartInstance = null;
+        let progressInterval = null;
+        let currentProgress = 0;
+        let progressSource = null;
+
+        // Initialize - hide progress container
+        progressContainer.style.display = 'none';
+
+        // Update progress display
+        function updateProgress(percent, message) {
+            currentProgress = percent;
+            progressBar.style.width = `${percent}%`;
+            progressText.textContent = `${percent}%`;
+            phasesText.textContent = message;
+        }
+
+        // Clean up progress
+        function cleanupProgress() {
+            if (progressInterval) {
+                clearInterval(progressInterval);
+                progressInterval = null;
+            }
+            if (progressSource) {
+                progressSource.close();
+                progressSource = null;
+            }
+        }
+
+        measureBtn.addEventListener('click', async () => {
+            const url = targetUrl.value.trim();
+            
+            // Reset UI
+            errorMessage.textContent = '';
+            resultsSection.classList.add('hidden');
+            fullAuditContainer.classList.add('hidden');
+            lastMeasurementData = null;
+            cleanupProgress();
+            
+            if (!url) {
+                errorMessage.textContent = 'Please enter a valid URL.';
+                return;
+            }
+
+            try {
+                // Show and initialize progress bar
+                currentProgress = 0;
+                progressContainer.style.display = 'block';
+                updateProgress(5, 'Initializing measurement...');
+                
+                // Create SSE connection for real progress updates
+                progressSource = new EventSource(`/api/progress?url=${encodeURIComponent(url)}`);
+                
+                progressSource.onmessage = (event) => {
+                    const data = JSON.parse(event.data);
+                    updateProgress(data.progress, data.message);
+                    
+                    if (data.progress >= 100) {
+                        cleanupProgress();
+                    }
+                };
+                
+                progressSource.onerror = () => {
+                    cleanupProgress();
+                    updateProgress(100, 'Measurement completed!');
+                };
+
+                // Fallback progress simulation
+                progressInterval = setInterval(() => {
+                    if (currentProgress < 90) {
+                        currentProgress += 1;
+                        updateProgress(currentProgress, 'Measuring performance...');
+                    }
+                }, 500);
+
+                // Perform measurement
+                const res = await fetch(`/api/measure?url=${encodeURIComponent(url)}&runs=3`);
+                if (!res.ok) {
+                    const errorText = await res.text();
+                    throw new Error(errorText || `HTTP ${res.status}`);
+                }
+                const data = await res.json();
+
+                if (!data.phases || !Array.isArray(data.phases)) {
+                    throw new Error('Invalid data format: phases missing.');
+                }
+
+                lastMeasurementData = data;
+
+                // Complete progress
+                updateProgress(100, 'Rendering results...');
+                await new Promise(resolve => setTimeout(resolve, 800));
+
+                // Hide progress bar
+                progressContainer.style.display = 'none';
+                cleanupProgress();
+
+                // Update metrics
+                const originalTotal = data.original?.total ?? 0;
+                const optimizedTotal = data.optimized?.total ?? originalTotal;
+                const timeSaved = originalTotal - optimizedTotal;
+
+                document.getElementById('original-total').textContent = `${originalTotal.toFixed(1)} ms`;
+                document.getElementById('optimized-total').textContent = `${optimizedTotal.toFixed(1)} ms`;
+                document.getElementById('time-saved').textContent = `${timeSaved.toFixed(1)} ms`;
+
+                // Update Phase Table
+                const tbody = document.querySelector('#phase-table tbody');
+                tbody.innerHTML = '';
+                data.phases.forEach(phase => {
+                    const tr = document.createElement('tr');
+                    const delta = phase.delta ?? 0;
+                    const deltaClass = delta < 0 ? 'delta-negative' : 'delta-positive';
+                    const deltaSign = delta < 0 ? '' : '+';
+                    
+                    tr.innerHTML = `
+                        <td>${phase.name}</td>
+                        <td>${(phase.original ?? 0).toFixed(1)} ms</td>
+                        <td>${(phase.optimized ?? 0).toFixed(1)} ms</td>
+                        <td class="${deltaClass}">${deltaSign}${delta.toFixed(1)} ms</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+                // Render Chart
+                const ctx = document.getElementById('phase-chart').getContext('2d');
+                if (chartInstance) chartInstance.destroy();
+                chartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.phases.map(p => p.name),
+                        datasets: [
+                            { 
+                                label: 'Original', 
+                                data: data.phases.map(p => p.original || 0), 
+                                backgroundColor: 'rgba(78, 121, 167, 0.8)',
+                                borderColor: 'rgba(78, 121, 167, 1)',
+                                borderWidth: 1
+                            },
+                            { 
+                                label: 'Optimized', 
+                                data: data.phases.map(p => p.optimized || 0), 
+                                backgroundColor: 'rgba(89, 161, 79, 0.8)',
+                                borderColor: 'rgba(89, 161, 79, 1)',
+                                borderWidth: 1
+                            }
+                        ]
+                    },
+                    options: { 
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Time (ms)'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Performance Comparison'
+                            }
+                        }
+                    }
+                });
+
+                // Show results
+                resultsSection.classList.remove('hidden');
+                fullAuditContainer.classList.remove('hidden');
+
+            } catch (err) {
+                cleanupProgress();
+                progressContainer.style.display = 'none';
+                errorMessage.textContent = `Error: ${err.message}`;
+                console.error(err);
+            }
+        });
+
+        // Full Audit download
+        document.getElementById('full-audit-btn').addEventListener('click', async () => {
+            if (!lastMeasurementData) {
+                alert('Please measure first before running the full audit.');
+                return;
+            }
+
+            const fullAuditBtn = document.getElementById('full-audit-btn');
+            const originalText = fullAuditBtn.textContent;
+            
+            try {
+                fullAuditBtn.disabled = true;
+                fullAuditBtn.textContent = 'Generating PDF...';
+                
+                const res = await fetch('/api/report', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(lastMeasurementData)
+                });
+
+                if (!res.ok) {
+                    const errorText = await res.text();
+                    throw new Error(errorText || `HTTP ${res.status}`);
+                }
+
+                const blob = await res.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'performance_audit_report.pdf';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+
+            } catch (err) {
+                alert(`Error generating report: ${err.message}`);
+            } finally {
+                fullAuditBtn.disabled = false;
+                fullAuditBtn.textContent = originalText;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Performance Report</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; color: #222; }
+    h1 { font-size: 18px; margin-bottom: 6px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+    th, td { border: 1px solid #ddd; padding: 6px; font-size: 12px; }
+    th { background: #f2f2f2; }
+  </style>
+</head>
+<body>
+  <h1>Performance Report for {{ data.url }}</h1>
+  <p>Runs: {{ data.runs }}</p>
+
+  <h3>Aggregated Totals</h3>
+  <table>
+    <tr><th>Metric</th><th>Original (ms)</th><th>Optimized (ms)</th></tr>
+    <tr>
+      <td>Total Load Time</td>
+      <td>{{ data.original.total if data.original else '—' }}</td>
+      <td>{{ data.optimized.total if data.optimized else '—' }}</td>
+    </tr>
+    <tr>
+      <td>Full TTFB</td>
+      <td>{{ data.original.full_ttfb if data.original else '—' }}</td>
+      <td>{{ data.optimized.full_ttfb if data.optimized else '—' }}</td>
+    </tr>
+  </table>
+
+  <h3>Phase Breakdown</h3>
+  <table>
+    <thead><tr><th>Phase</th><th>Original (ms)</th><th>Optimized (ms)</th><th>Delta</th></tr></thead>
+    <tbody>
+      {% for p in data.phases %}
+      <tr><td>{{ p.name }}</td><td>{{ p.original }}</td><td>{{ p.optimized }}</td><td>{{ p.delta }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>

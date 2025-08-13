@@ -1,0 +1,62 @@
+# Python bytecode and cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Python virtual environment
+.venv/
+
+# Python environment folders
+env/
+venv/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# PyInstaller
+*.spec
+
+# Logs and databases
+*.log
+*.sqlite3
+*.db
+
+# dotenv environment variables file
+.env
+.env.*
+
+# Playwright related folders
+playwright-report/
+test-results/
+.playwright/
+
+# Cache folders you have in your project
+cache/
+cache_playwright/
+
+# Node.js dependencies
+node_modules/
+
+# npm package lock files (optional, but sometimes ignored)
+package-lock.json
+
+# VS Code settings
+.vscode/
+
+# Reports and outputs
+report.pdf
+
+# Other common ignores
+*.bak
+*.tmp
+
+# Ignore coverage folders if any
+coverage/
+
+# Ignore Python test cache
+.tox/
+.nox/
+.coverage

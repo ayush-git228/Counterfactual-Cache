@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "install": "^0.13.0",
+    "playwright": "^1.54.2"
+  }
+}
