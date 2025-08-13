@@ -5,19 +5,19 @@ Measure once, simulate infinitely: Explore performance optimizations without rel
 Counterfactual Cache is an interactive web performance analysis tool that allows you to measure website load times with precision, simulate optimization scenarios in real-time, and visualize potential performance improvements.
 
 ---
-<img width="1917" height="528" alt="ss-ss-4" src="https://github.com/user-attachments/assets/dd7a58fe-ba99-433c-901c-7426f19a34c1" />
+<img width="1920" height="491" alt="ss-ss-1" src="https://github.com/user-attachments/assets/d999e1ea-4050-4e06-b715-193a3ec516c1" />
 
 ---
-<img width="1895" height="589" alt="ss-ss-1" src="https://github.com/user-attachments/assets/9dc7e32a-418c-4245-89ee-734945269cf0" />
+<img width="1885" height="584" alt="ss-ss-2" src="https://github.com/user-attachments/assets/fd9e0849-cbff-435b-8ccc-537e0ed011c7" />
 
 ----
-<img width="1891" height="701" alt="ss-ss-2" src="https://github.com/user-attachments/assets/2fb646b5-c1bb-4299-ab7e-83ddcf3d1282" />
+<img width="1891" height="691" alt="ss-ss-3" src="https://github.com/user-attachments/assets/9b93c277-95f1-4871-9afb-abf165d55bbe" />
 
 ---
-<img width="1878" height="807" alt="ss-ss-3" src="https://github.com/user-attachments/assets/88e87278-97c9-4fb4-87f3-9f0906c9a22a" />
+<img width="1889" height="800" alt="ss-ss-4" src="https://github.com/user-attachments/assets/7eb284a0-233e-4e2c-bf01-e43b2559f238" />
 
 ---
-<img width="1894" height="920" alt="ss-ss-5" src="https://github.com/user-attachments/assets/e889f378-e6bb-4d91-9676-9744a441c10e" />
+<img width="1909" height="892" alt="ss-ss-5" src="https://github.com/user-attachments/assets/f53dad24-a1d4-4618-aae1-a3b54242f3a2" />
 
 ---
 
