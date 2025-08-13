@@ -106,7 +106,7 @@ Go to  http://127.0.0.1:8000 or your local Url
 
 ---
 
-Usage Guide 🚀
+## Usage Guide 🚀
 
 Basic Workflow
 
@@ -118,7 +118,6 @@ Basic Workflow
 
 4. Toggle optimization scenarios to see potential improvements
 
----
 
 | Optimization        | Effect                      | Key Benefit                 |
 | ------------------- | --------------------------- | --------------------------- |
@@ -129,7 +128,7 @@ Basic Workflow
 
 ---
 
-Technical Architecture ⚙️
+## Technical Architecture ⚙️
 
 
 Backend:
@@ -156,7 +155,7 @@ Export:
 
 ---
 
-Contributing 🤝
+## Contributing 🤝
 
 I welcome contributions! Please follow these steps:
 
@@ -177,7 +176,7 @@ git push origin feature/your-feature
 
 ---
 
-Roadmap for future (I think so)🗺️
+## Roadmap for future (I think so)🗺️
 
 1. Mobile device simulation
 
